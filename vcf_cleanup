@@ -1,0 +1,37 @@
+#!/usr/bin/python
+# VCF contacts file cleanup for filtering out and removing emails
+# 
+# Author: Kevin Kao
+# Email: kkao@berkeley.edu
+# Creation Date: 5/25/14
+# Last Updated: 5/25/14
+
+import sys, os
+
+def main():
+	arglen = len(sys.argv)
+	arglist = sys.argv[1:]
+	
+	filepath = os.path.join(os.getcwd(), arglist[0])
+	try:
+		vcf_data = open(filepath)
+	except Exception:
+		print "Error while opening VCF file"
+		exit(1); 
+
+	output = file('vcf_modded.vcf', 'wb')
+	
+	line = vcf_data.readline()
+	curr_contact = ''
+	while line:
+		curr_contact += line
+		if 'END:VCARD' in line:
+			if  'TEL' in curr_contact:
+				output.write(curr_contact)
+			curr_contact = ''
+		line = vcf_data.readline()
+			
+	print "Complete!"
+		
+
+if __name__ == '__main__': main()
